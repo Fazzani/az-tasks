@@ -1,0 +1,77 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "348a929c-c1a4-4e8b-bfb4-116583ec20f9",
+  "name": "az-sonar-project-mgt",
+  "friendlyName": "Sonar project manager",
+  "description": "Azure devops Sonar project manager",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "author": "Synker",
+  "version": {
+    "Major": 0,
+    "Minor": 1,
+    "Patch": 0
+  },
+  "instanceNameFormat": "Echo ${organization}:$(name)",
+  "inputs": [
+    {
+      "name": "key",
+      "type": "string",
+      "label": "Project key",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Project Key",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "org",
+      "type": "string",
+      "label": "Organization key",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Organization Key"
+    },
+    {
+      "name": "action",
+      "type": "pickList",
+      "label": "Action",
+      "defaultValue": "Create",
+      "required": true,
+      "options": {
+        "create": "Create",
+        "update": "Delete"
+      }
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "label": "Project name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Project Name",
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "visibleRule": "action = create"
+    },
+    {
+      "name": "visibility",
+      "type": "pickList",
+      "label": "Visibility",
+      "defaultValue": "Public",
+      "required": true,
+      "options": {
+        "private": "Private",
+        "public": "Public"
+      },
+      "visibleRule": "action = Create"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}
