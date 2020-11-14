@@ -1,11 +1,18 @@
 # Azure Devops Tasks
 
-## Publisching tasks
+## Publishing tasks
 
 ```shell
 npm i -g tfx-cli
-tfx extension create --manifest-globs vss-extension.json
+./publish.sh
 ```
+
+## TODO
+
+- [ ] Using service connection
+- [ ] Sonar api unit tests
+- [ ] Test build
+- [ ] Versioning
 
 ## References
 

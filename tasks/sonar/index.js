@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -9,50 +28,62 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const tl = require("azure-pipelines-task-lib/task");
-const sonarApi_1 = require("./sonarApi");
+const tl = __importStar(require("azure-pipelines-task-lib/task"));
+const sonar_common = __importStar(require("./sonarCommon"));
+const sonarCommon_1 = require("./sonarCommon");
+const sonar_projects = __importStar(require("./sonarProjects"));
 function createProject() {
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     return __awaiter(this, void 0, void 0, function* () {
-        let typedVisibilityString = 'Public';
-        const prj_name = (_a = tl.getInput('name', true)) !== null && _a !== void 0 ? _a : 'gdriveano2';
-        const prj_key = (_b = tl.getInput('key', true)) !== null && _b !== void 0 ? _b : 'gdriveano2';
-        const sonar_org = tl.getInput('org', true);
-        const access_token = tl.getInput('access_token', true);
-        const visibility = (_c = tl.getInput('visibility', false)) !== null && _c !== void 0 ? _c : typedVisibilityString;
-        if (access_token === undefined || access_token === '') {
+        const typedVisibilityString = 'Public';
+        const prgName = (_a = tl.getInput('name', true)) !== null && _a !== void 0 ? _a : 'gdriveano2';
+        const prjKey = (_b = tl.getInput('key', true)) !== null && _b !== void 0 ? _b : 'gdriveano2';
+        // const sonarOrg: string | undefined = tl.getInput('org', true);
+        // const token: string | undefined = tl.getInput('access_token', true);
+        const serviceConnection = (_c = tl.getInput(sonarCommon_1.EndpointType.SonarCloud, true)) !== null && _c !== void 0 ? _c : '';
+        const endpoint = sonar_common.Common.getEndpoint(serviceConnection, sonarCommon_1.EndpointType.SonarCloud);
+        tl.debug(`Endpoint: ${JSON.stringify(endpoint)}`);
+        const visibility = (_d = tl.getInput('visibility', false)) !== null && _d !== void 0 ? _d : typedVisibilityString;
+        if (endpoint.token === undefined || endpoint.token === '') {
             tl.setResult(tl.TaskResult.Failed, 'No access token was given');
             return;
         }
-        const exist = yield sonarApi_1.SonarApi.Projects.isExist(prj_name, sonar_org, access_token);
+        endpoint.token = 'd4b5728a887c91d8959c3aaef85742f1d69b90d3';
+        const exist = yield sonar_projects.Projects.isExist(prjKey, endpoint.organization, endpoint.token, endpoint.url);
         if (!exist) {
-            const create_res = yield sonarApi_1.SonarApi.Projects.create(prj_name, sonar_org, prj_key, access_token, visibility);
-            tl.setResult(tl.TaskResult.Succeeded, `Project ${prj_name} was created successfully with this key: ${create_res.project.key}`, true);
-            console.log(create_res);
+            const res = yield sonar_projects.Projects.create(prgName, endpoint.organization, prjKey, endpoint.token, visibility, endpoint.url);
+            tl.setResult(tl.TaskResult.Succeeded, `Project ${prgName} was created successfully with this key: ${res.project.key}`, true);
+            tl.debug(res);
         }
-        else
-            tl.setResult(tl.TaskResult.SucceededWithIssues, `The project ${prj_name} already exists`);
+        else {
+            const msg = `The project ${prgName} already exists`;
+            tl.warning(msg);
+            tl.setResult(tl.TaskResult.SucceededWithIssues, msg, true);
+        }
     });
 }
 function deleteProject() {
-    var _a;
+    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
-        const access_token = tl.getInput('access_token', true);
-        const prj_key = (_a = tl.getInput('key', true)) !== null && _a !== void 0 ? _a : 'gdriveano2';
-        const sonar_org = tl.getInput('org', true);
-        console.log('test');
-        if (access_token === undefined || access_token === '') {
+        const serviceConnection = (_a = tl.getInput(sonarCommon_1.EndpointType.SonarCloud, true)) !== null && _a !== void 0 ? _a : '';
+        const endpoint = sonar_common.Common.getEndpoint(serviceConnection, sonarCommon_1.EndpointType.SonarCloud);
+        tl.debug(`Endpoint: ${JSON.stringify(endpoint)}`);
+        // const token: string | undefined = tl.getInput('access_token', true);
+        const prjKey = (_b = tl.getInput('key', true)) !== null && _b !== void 0 ? _b : 'gdriveano2';
+        // const sonarOrg: string | undefined = tl.getInput('org', true);
+        if (endpoint.token === undefined || endpoint.token === '') {
             tl.error('No access token was given');
+            tl.setResult(tl.TaskResult.Failed, 'No access token was given');
             return;
         }
-        const exist = yield sonarApi_1.SonarApi.Projects.isExist(prj_key, sonar_org, access_token);
+        const exist = yield sonar_projects.Projects.isExist(prjKey, endpoint.organization, endpoint.token, endpoint.url);
         if (exist) {
-            const delete_res = yield sonarApi_1.SonarApi.Projects.delete(prj_key, access_token);
-            tl.setResult(tl.TaskResult.Succeeded, `Project ${prj_key} was deleted successfully`, true);
-            console.log(delete_res);
+            const res = yield sonar_projects.Projects.delete(prjKey, endpoint.token, endpoint.url);
+            tl.debug(res);
+            tl.setResult(tl.TaskResult.Succeeded, `Project ${prjKey} was deleted successfully`, true);
         }
         else {
-            tl.setResult(tl.TaskResult.Failed, `No project found with key ${prj_key}`);
+            tl.error(`No project found with key ${prjKey}`);
         }
     });
 }
@@ -71,7 +102,7 @@ function run() {
             }
         }
         catch (err) {
-            console.log(err.message);
+            tl.debug(err.message);
             tl.setResult(tl.TaskResult.Failed, err.message);
         }
     });

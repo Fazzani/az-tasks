@@ -4,6 +4,15 @@
   "name": "SonarCloud project manager Build and Release Tools",
   "version": "0.0.1",
   "publisher": "synker",
+  "branding": {
+    "color": "rgb(243, 243, 243)",
+    "theme": "light"
+  },
+  "repository": {
+    "type": "git",
+    "uri": "https://github.com/Fazzani/az-tasks"
+  },
+  "tags": ["build", "ci", "continuous integration", "code quality", "static code analysis"],
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
@@ -16,12 +25,16 @@
   },
   "files": [
     {
-      "path": "tasks/sonar"
+      "path": "tasks"
+    },
+    {
+      "path": "images",
+      "addressable": true
     }
   ],
   "contributions": [
     {
-      "id": "custom-build-release-task",
+      "id": "348a929c-c1a4-4e8b-bfb4-116583ec20f9",
       "type": "ms.vss-distributed-task.task",
       "targets": ["ms.vss-distributed-task.tasks"],
       "properties": {

@@ -12,32 +12,49 @@
     "Minor": 1,
     "Patch": 0
   },
-  "instanceNameFormat": "Echo ${organization}:$(name)",
+  "instanceNameFormat": "Sonar $(action) project $(org):$(key)",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
   "inputs": [
+    {
+      "name": "SonarCloud",
+      "type": "connectedService:sonarcloud",
+      "label": "SonarCloud Service Endpoint",
+      "required": true,
+      "helpMarkDown": "Select the SonarCloud endpoint for your project. To create one, go to your **Project Settings**, then **Service Connections** and create a new SonarCloud Service Endpoint, you will have to enter your SonarCloud account token.\n If you are on the build pipeline classic editor, click on the Manage link to be redirected to that page."
+    },
     {
       "name": "key",
       "type": "string",
       "label": "Project key",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "Project Key",
+      "helpMarkDown": "Select the key of your project",
       "properties": {
         "EditableOptions": "True"
       }
     },
     {
       "name": "org",
-      "type": "string",
-      "label": "Organization key",
-      "defaultValue": "",
+      "type": "pickList",
+      "label": "Organization",
       "required": true,
-      "helpMarkDown": "Organization Key"
+      "helpMarkDown": "Select the name of your Organization",
+      "properties": {
+        "EditableOptions": "True"
+      }
     },
     {
       "name": "action",
       "type": "pickList",
       "label": "Action",
       "defaultValue": "Create",
+      "helpMarkDown": "Select the action to do on your project",
       "required": true,
       "options": {
         "create": "Create",
@@ -50,7 +67,7 @@
       "label": "Project name",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "Project Name",
+      "helpMarkDown": "Select the name of your project",
       "properties": {
         "EditableOptions": "True"
       },
@@ -67,6 +84,15 @@
         "public": "Public"
       },
       "visibleRule": "action = Create"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "org",
+      "endpointId": "$(SonarCloud)",
+      "endpointUrl": "{{endpoint.url}}/api/organizations/search?member=true",
+      "resultSelector": "jsonpath:$.organizations[*]",
+      "resultTemplate": "{ \"Value\" : \"{{{key}}}\", \"DisplayValue\" : \"{{{name}}} ({{{key}}})\" }"
     }
   ],
   "execution": {

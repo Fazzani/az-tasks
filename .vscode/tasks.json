@@ -9,6 +9,22 @@
 			],
 			"group": "build",
 			"label": "tsc: build - tsconfig.json"
-		}
+		},
+		{
+            "label": "tsc build",
+            "type": "shell",
+            "command": "tsc -p tsconfig.json",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": [
+                "$tsc"
+            ]
+        }
 	]
 }
