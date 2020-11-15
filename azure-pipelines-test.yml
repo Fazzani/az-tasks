@@ -1,0 +1,25 @@
+pool:
+  name: Azure Pipelines
+
+steps:
+- task: synker.sonar-project-build-release-task.348a929c-c1a4-4e8b-bfb4-116583ec20f9.az-sonar-project-mgt@0
+  displayName: 'Sonar project $(SONAR_CREATE_PROJECT_NAME)'
+  inputs:
+    SonarCloud: Sonarqube
+    key: 'testKey_$(Build.BuildNumber)'
+    org: 'fazzani-github'
+    name: 'nameKey_$(Build.BuildNumber)'
+
+- task: synker.sonar-project-build-release-task.348a929c-c1a4-4e8b-bfb4-116583ec20f9.az-sonar-project-mgt@0
+  displayName: 'Delete Sonar project: $(SONAR_CREATE_PROJECT_NAME)'
+  inputs:
+    SonarCloud: Sonarqube
+    key: 'testKey_$(Build.BuildNumber)'
+    org: 'fazzani-github'
+    action: delete
+
+- script: |
+   echo "$(SONAR_CREATED_PROJECT_KEY)"
+   echo "$(SONAR_CREATED_PROJECT_NAME)"
+   echo "$(SONAR_ORGANIZATION)"
+  displayName: 'Command Line Script'

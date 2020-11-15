@@ -5,12 +5,11 @@ import * as sonar_projects from './sonarProjects';
 
 async function createProject() {
   const typedVisibilityString: keyof typeof sonar_common.Visibility = 'Public';
-  const prgName: string = tl.getInput('name', true) ?? 'gdriveano2';
-  const prjKey: string = tl.getInput('key', true) ?? 'gdriveano2';
-  // const sonarOrg: string | undefined = tl.getInput('org', true);
-  // const token: string | undefined = tl.getInput('access_token', true);
+  const prgName: string = tl.getInput('name', true) ?? '';
+  const prjKey: string = tl.getInput('key', true) ?? prgName;
   const serviceConnection = tl.getInput(EndpointType.SonarCloud, true) ?? '';
   const endpoint = sonar_common.Common.getEndpoint(serviceConnection, EndpointType.SonarCloud);
+
   tl.debug(`Endpoint: ${JSON.stringify(endpoint)}`);
 
   const visibility: sonar_common.Visibility =
@@ -29,12 +28,18 @@ async function createProject() {
       visibility,
       endpoint.url,
     );
+
+    tl.setVariable('SONAR_CREATED_PROJECT_KEY', res.project.key);
+    tl.setVariable('SONAR_CREATED_PROJECT_NAME', res.project.name);
+    tl.setVariable('SONAR_ORGANIZATION', endpoint.organization ?? '');
+
+    tl.debug(`${JSON.stringify(res)}`);
+
     tl.setResult(
       tl.TaskResult.Succeeded,
       `Project ${prgName} was created successfully with this key: ${res.project.key}`,
       true,
     );
-    tl.debug(res);
   } else {
     const msg = `The project ${prgName} already exists`;
     tl.warning(msg);
@@ -47,9 +52,7 @@ async function deleteProject() {
   const endpoint = sonar_common.Common.getEndpoint(serviceConnection, EndpointType.SonarCloud);
   tl.debug(`Endpoint: ${JSON.stringify(endpoint)}`);
 
-  // const token: string | undefined = tl.getInput('access_token', true);
-  const prjKey: string = tl.getInput('key', true) ?? 'gdriveano2';
-  // const sonarOrg: string | undefined = tl.getInput('org', true);
+  const prjKey: string = tl.getInput('key', true) ?? '';
   if (endpoint.token === undefined || endpoint.token === '') {
     tl.error('No access token was given');
     tl.setResult(tl.TaskResult.Failed, 'No access token was given');

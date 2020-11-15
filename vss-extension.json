@@ -12,14 +12,22 @@
     "type": "git",
     "uri": "https://github.com/Fazzani/az-tasks"
   },
-  "tags": ["build", "ci", "continuous integration", "code quality", "static code analysis"],
+  "tags": [
+    "build",
+    "ci",
+    "continuous integration",
+    "code quality",
+    "static code analysis"
+  ],
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
     }
   ],
   "description": "Tools for building/releasing with sonarcloud. Includes one build/release task.",
-  "categories": ["Azure Pipelines"],
+  "categories": [
+    "Azure Pipelines"
+  ],
   "icons": {
     "default": "images/extension-icon.png"
   },
@@ -36,7 +44,9 @@
     {
       "id": "348a929c-c1a4-4e8b-bfb4-116583ec20f9",
       "type": "ms.vss-distributed-task.task",
-      "targets": ["ms.vss-distributed-task.tasks"],
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
       "properties": {
         "name": "tasks/sonar"
       }

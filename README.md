@@ -1,18 +1,36 @@
 # Azure Devops Tasks
 
+[![Build Status](https://dev.azure.com/henifazzani/SynkerAPI/_apis/build/status/Sonar%20task%20Test%20create%20project?branchName=main)](https://dev.azure.com/henifazzani/SynkerAPI/_build/latest?definitionId=26&branchName=main)
+
 ## Publishing tasks
 
 ```shell
+
+# nb: version must be incremented into those files task.json and vss-extension.json
+
 npm i -g tfx-cli
 ./publish.sh
 ```
 
+## Azure devops extensions
+
+- SonarCloud project management
+  - Create/Delete sonarcloud project
+
 ## TODO
 
-- [ ] Using service connection
 - [ ] Sonar api unit tests
-- [ ] Test build
-- [ ] Versioning
+- [ ] Task Versioning
+- [ ] Add new build to publish extension
+- [x] Using service connection
+- [x] Test build
+
+## Dev links
+
+- [Microsoft extensions marketplace admin](https://marketplace.visualstudio.com/manage/publishers/synker)
+- [Azure devops extensions admin](https://dev.azure.com/henifazzani/_settings/extensions?tab=installed)
+- [Azure devops pipeline test](https://dev.azure.com/henifazzani/SynkerAPI/_build?definitionId=26&_a=summary)
+- [Sonar Api](https://sonarcloud.io/web_api/api/projects)
 
 ## References
 
