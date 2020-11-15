@@ -58,7 +58,7 @@
       "required": true,
       "options": {
         "create": "Create",
-        "update": "Delete"
+        "delete": "Delete"
       }
     },
     {

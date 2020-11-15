@@ -27,10 +27,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EndpointType = exports.Common = exports.Visibility = exports.HttpMethod = void 0;
 const axios = require("axios");
 const tl = __importStar(require("azure-pipelines-task-lib/task"));
+const qs_1 = __importDefault(require("qs"));
 var HttpMethod;
 (function (HttpMethod) {
     HttpMethod["Get"] = "get";
@@ -53,7 +57,7 @@ class Common {
                 const result = yield axios.default({
                     method,
                     url,
-                    data: payload,
+                    data: qs_1.default.stringify(payload),
                     auth: {
                         username: token,
                         password: '',
