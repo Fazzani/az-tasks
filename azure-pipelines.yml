@@ -1,25 +1,55 @@
+name: $(SourceBranchName)_$(date:yyyyMMdd)$(rev:.r)
 pool:
-  name: Azure Pipelines
+  vmImage: $(imageName)
+
+pr:
+  branches:
+    include:
+    - master
+    - develop
+    - refs/tags/v*
+  paths:
+    exclude:
+    - docs/*
+    - README.md
+
+trigger:
+  branches:
+    include:
+    - master
+    - develop
+    - refs/tags/v*
+  paths:
+    exclude:
+    - docs/*
+    - README.md
+
+strategy:
+  matrix:
+    linux:
+      imageName: 'ubuntu-16.04'
+      node_version: 10.x
+
 
 steps:
-- task: synker.sonar-project-build-release-task.348a929c-c1a4-4e8b-bfb4-116583ec20f9.az-sonar-project-mgt@0
-  displayName: 'Sonar project $(SONAR_CREATE_PROJECT_NAME)'
-  inputs:
-    SonarCloud: Sonarqube
-    key: 'testKey_$(Build.BuildNumber)'
-    org: 'fazzani-github'
-    name: 'nameKey_$(Build.BuildNumber)'
+- checkout: self
+  persistCredentials: true
+  clean: true
 
-- task: synker.sonar-project-build-release-task.348a929c-c1a4-4e8b-bfb4-116583ec20f9.az-sonar-project-mgt@0
-  displayName: 'Delete Sonar project: $(SONAR_CREATE_PROJECT_NAME)'
+- task: NodeTool@0
   inputs:
-    SonarCloud: Sonarqube
-    key: 'testKey_$(Build.BuildNumber)'
-    org: 'fazzani-github'
-    action: delete
+    versionSpec: $(node_version)
 
-- script: |
-   echo "$(SONAR_CREATED_PROJECT_KEY)"
-   echo "$(SONAR_CREATED_PROJECT_NAME)"
-   echo "$(SONAR_ORGANIZATION)"
-  displayName: 'Command Line Script'
+- task: Npm@1
+  inputs:
+  command: 'install'
+
+- script: npm run lint
+  displayName: 'Lint'
+
+- script: npm run build
+  displayName: 'Build'
+
+- script: ./publish.sh
+  displayName: Publish
+  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
