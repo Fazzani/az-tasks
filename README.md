@@ -1,6 +1,6 @@
 # Azure Devops Tasks
 
-[![Build Status](https://dev.azure.com/henifazzani/SynkerAPI/_apis/build/status/Sonar%20task%20Test%20create%20project?branchName=main)](https://dev.azure.com/henifazzani/SynkerAPI/_build/latest?definitionId=26&branchName=main)
+[![Build Status](https://dev.azure.com/henifazzani/SynkerAPI/_apis/build/status/az-tasks-ci?branchName=main)](https://dev.azure.com/henifazzani/SynkerAPI/_build/latest?definitionId=27&branchName=main1)
 
 ## Publishing tasks
 
@@ -21,7 +21,7 @@ npm i -g tfx-cli
 
 - [ ] Sonar api unit tests
 - [ ] Task Versioning
-- [ ] Add new build to publish extension
+- [x] Add new build to publish extension
 - [x] Using service connection
 - [x] Test build
 

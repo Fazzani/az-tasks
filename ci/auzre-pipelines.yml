@@ -6,6 +6,7 @@ pr:
   branches:
     include:
     - master
+    - main
     - develop
     - refs/tags/v*
   paths:
@@ -17,6 +18,7 @@ trigger:
   branches:
     include:
     - master
+    - main
     - develop
     - refs/tags/v*
   paths:
@@ -42,7 +44,7 @@ steps:
 
 - task: Npm@1
   inputs:
-  command: 'install'
+    command: 'install'
 
 - script: npm run lint
   displayName: 'Lint'
@@ -50,6 +52,12 @@ steps:
 - script: npm run build
   displayName: 'Build'
 
-- script: ./publish.sh
+- script: npm run test
+  displayName: 'Build'
+  enabled: false
+
+- bash: chmod +x ./publish.sh && ./publish.sh
   displayName: Publish
   condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
+  env:
+    AZ_DEVOPS_MARKET_PLACE: $(AZ_DEVOPS_MARKET_PLACE)
