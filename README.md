@@ -21,7 +21,7 @@ npm i -g tfx-cli
 
 - [ ] Sonar api unit tests
 - [ ] Task Versioning
-- [ ] Add new build to publish extension
+- [x] Add new build to publish extension
 - [x] Using service connection
 - [x] Test build
 
