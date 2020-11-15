@@ -5,7 +5,7 @@ share_with_orgs="henifazzani"
 
 npm prune --production
 cp -r node_modules ./tasks/sonar
-rm *.vsix
+rm *.vsix || echo "No vsix detected"
 
 tsc
 
@@ -27,7 +27,7 @@ tfx extension publish --manifest-globs vss-extension.json --share-with $share_wi
 echo "Commit the new version" && \
 git config --global user.email "heni.fazzani@gmail.com" && \
 git config --global user.name "Fazzani" && \
-git commit -m "Bump new version" && \
+git commit -m "[skip ci] Bump new version" && \
 git push origin master
 
 # tfx extension show --publisher $publisher --extension-id $ext_id --token $AZ_DEVOPS_MARKET_PLACE
