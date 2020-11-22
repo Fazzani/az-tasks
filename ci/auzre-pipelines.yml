@@ -1,6 +1,6 @@
 name: $(SourceBranchName)_$(date:yyyyMMdd)$(rev:.r)
 pool:
-  vmImage: $(imageName)
+  vmImage: ubuntu-latest
 
 pr:
   branches:
@@ -26,38 +26,121 @@ trigger:
     - docs/*
     - README.md
 
-strategy:
-  matrix:
-    linux:
-      imageName: 'ubuntu-16.04'
-      node_version: 10.x
+variables:
+- name: node_version
+  value: "10.x"
+- name: tfx_version
+  value: "v0.8.x"
+- name: PublisherID
+  value: "synker"
+- name: "ExtensionID"
+  value: "sonar-project-build-release-task"
+- name: "ExtensionName"
+  value: "SonarCloud project manager Build and Release Tools"
+- name: marketplace_service_conn
+  value: vs_marketplace
+- name: ArtifactName
+  value: task
 
+stages:
+- stage: Run_and_publish_unit_tests
+  jobs:
+  - job:
+    steps:
+    - checkout: self
+      persistCredentials: true
+      clean: true
+    - task: NodeTool@0
+      inputs:
+        versionSpec: $(node_version)
+    - task: Npm@1
+      inputs:
+        command: 'install'
+    - script: npm run lint
+      displayName: 'Lint'
+    - script: npm run build
+      displayName: 'Build'
+    - script: npm run test
+      displayName: 'Test'
+      enabled: false
+    - task: PublishTestResults@2
+      displayName: 'Publish tests results'
+      enabled: false
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/ResultsFile.xml'
 
-steps:
-- checkout: self
-  persistCredentials: true
-  clean: true
+- stage: Package_extension_and_publish_build_artifacts
+  dependsOn: Run_and_publish_unit_tests
+  jobs:
+  - job:
+    steps:
+      - task: TfxInstaller@3
+        inputs:
+          version: $(tfx_version)
+      - task: Npm@1
+        inputs:
+          command: 'install'
+          workingDir: '.'
+      - task: Bash@3
+        displayName: Compile Javascript
+        inputs:
+          targetType: "inline"
+          script: |
+            tsc
+      - task: QueryAzureDevOpsExtensionVersion@3
+        inputs:
+          connectTo: 'VsTeam'
+          connectedServiceName: '$(marketplace_service_conn)'
+          publisherId: '$(PublisherID)'
+          extensionId: '$(ExtensionID)'
+          versionAction: 'Patch'
+          outputVariable: 'Task.Extension.Version'
+      - task: PackageAzureDevOpsExtension@3
+        inputs:
+          rootFolder: '$(System.DefaultWorkingDirectory)'
+          publisherId: '$(PublisherID)'
+          extensionId: '$(ExtensionID)'
+          extensionName: '$(ExtensionName)'
+          extensionVersion: '$(Task.Extension.Version)'
+          updateTasksVersion: true
+          updateTasksVersionType: 'patch'
+          extensionVisibility: 'public'
+          extensionPricing: 'free'
+      - task: CopyFiles@2
+        displayName: "Copy Files to: $(Build.ArtifactStagingDirectory)"
+        inputs:
+          Contents: "**/*.vsix"
+          TargetFolder: "$(Build.ArtifactStagingDirectory)"
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: '$(ArtifactName)'
+          publishLocation: 'Container'
 
-- task: NodeTool@0
-  inputs:
-    versionSpec: $(node_version)
-
-- task: Npm@1
-  inputs:
-    command: 'install'
-
-- script: npm run lint
-  displayName: 'Lint'
-
-- script: npm run build
-  displayName: 'Build'
-
-- script: npm run test
-  displayName: 'Build'
-  enabled: false
-
-- bash: chmod +x ./publish.sh && ./publish.sh
-  displayName: Publish
-  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
-  env:
-    AZ_DEVOPS_MARKET_PLACE: $(AZ_DEVOPS_MARKET_PLACE)
+- stage: Download_build_artifacts_and_publish_the_extension
+  dependsOn: Package_extension_and_publish_build_artifacts
+  jobs:
+    - job:
+      steps:
+        - task: TfxInstaller@3
+          inputs:
+            version: $(tfx_version)
+        - task: DownloadBuildArtifacts@0
+          inputs:
+            buildType: "current"
+            downloadType: "single"
+            artifactName: "$(ArtifactName)"
+            downloadPath: "$(System.DefaultWorkingDirectory)"
+        - task: PublishAzureDevOpsExtension@3
+          inputs:
+            connectTo: 'VsTeam'
+            connectedServiceName: '$(marketplace_service_conn)'
+            fileType: 'vsix'
+            vsixFile: './$(ArtifactName)/$(PublisherID).*.vsix'
+            publisherId: '$(PublisherID)'
+            extensionId: '$(ExtensionID)'
+            extensionName: '$(ExtensionName)'
+            updateTasksVersion: false
+            extensionVisibility: 'public'
+            extensionPricing: 'free'

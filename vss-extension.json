@@ -5,6 +5,9 @@
   "version": "1.0.4",
   "publisher": "synker",
   "content": {
+    "license": {
+      "path": "license.md"
+    },
     "details": {
       "path": "overview.md"
     }

@@ -31,6 +31,7 @@ npm i -g tfx-cli
 - [Azure devops extensions admin](https://dev.azure.com/henifazzani/_settings/extensions?tab=installed)
 - [Azure devops pipeline test](https://dev.azure.com/henifazzani/SynkerAPI/_build?definitionId=26&_a=summary)
 - [Sonar Api](https://sonarcloud.io/web_api/api/projects)
+- [Hub example](https://github.com/Mimeo/VSTSExtension-ActivePullRequests)
 
 ## References
 

@@ -4,7 +4,7 @@
   "description": "Azure devops tasks",
   "main": "index.js",
   "scripts": {
-    "test": "test",
+    "test": "mocha ./TestFile --reporter xunit --reporter-option output=ResultsFile.xml",
     "lint": "tslint -c tslint.json 'tasks/**/*.ts'",
     "build": "tsc -p tsconfig.json",
     "publish": "./publish.sh"
