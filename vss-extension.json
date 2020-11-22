@@ -1,65 +1,65 @@
 {
-    "manifestVersion": 1,
-    "id": "sonar-project-build-release-task",
-    "name": "SonarCloud project manager Build and Release Tools",
-    "version": "1.0.2",
-    "publisher": "synker",
-    "content": {
-        "details": {
-            "path": "overview.md"
-        }
+  "manifestVersion": 1,
+  "id": "sonar-project-build-release-task",
+  "name": "SonarCloud project manager Build and Release Tools",
+  "version": "1.0.3",
+  "publisher": "synker",
+  "content": {
+    "details": {
+      "path": "overview.md"
+    }
+  },
+  "galleryFlags": [
+    "Preview"
+  ],
+  "branding": {
+    "color": "rgb(243, 243, 243)",
+    "theme": "light"
+  },
+  "repository": {
+    "type": "git",
+    "uri": "https://github.com/Fazzani/az-tasks"
+  },
+  "tags": [
+    "build",
+    "ci",
+    "continuous integration",
+    "code quality",
+    "static code analysis",
+    "sonar",
+    "sonarcloud"
+  ],
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "description": "Tools for building/releasing with sonarcloud. Includes one build/release task.",
+  "categories": [
+    "Azure Pipelines"
+  ],
+  "icons": {
+    "default": "images/extension-icon.png"
+  },
+  "files": [
+    {
+      "path": "tasks"
     },
-    "galleryFlags": [
-        "Preview"
-    ],
-    "branding": {
-        "color": "rgb(243, 243, 243)",
-        "theme": "light"
-    },
-    "repository": {
-        "type": "git",
-        "uri": "https://github.com/Fazzani/az-tasks"
-    },
-    "tags": [
-        "build",
-        "ci",
-        "continuous integration",
-        "code quality",
-        "static code analysis",
-        "sonar",
-        "sonarcloud"
-    ],
-    "targets": [
-        {
-            "id": "Microsoft.VisualStudio.Services"
-        }
-    ],
-    "description": "Tools for building/releasing with sonarcloud. Includes one build/release task.",
-    "categories": [
-        "Azure Pipelines"
-    ],
-    "icons": {
-        "default": "images/extension-icon.png"
-    },
-    "files": [
-        {
-            "path": "tasks"
-        },
-        {
-            "path": "images",
-            "addressable": true
-        }
-    ],
-    "contributions": [
-        {
-            "id": "348a929c-c1a4-4e8b-bfb4-116583ec20f9",
-            "type": "ms.vss-distributed-task.task",
-            "targets": [
-                "ms.vss-distributed-task.tasks"
-            ],
-            "properties": {
-                "name": "tasks/sonar"
-            }
-        }
-    ]
+    {
+      "path": "images",
+      "addressable": true
+    }
+  ],
+  "contributions": [
+    {
+      "id": "348a929c-c1a4-4e8b-bfb4-116583ec20f9",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "tasks/sonar"
+      }
+    }
+  ]
 }
