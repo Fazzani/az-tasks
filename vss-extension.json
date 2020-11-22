@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "sonar-project-build-release-task",
     "name": "SonarCloud project manager Build and Release Tools",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "publisher": "synker",
     "content": {
         "details": {
