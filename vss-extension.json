@@ -4,6 +4,9 @@
   "name": "SonarCloud project manager Build and Release Tools",
   "version": "1.0.1",
   "publisher": "synker",
+  "galleryFlags": [
+        "Preview"
+    ],
   "branding": {
     "color": "rgb(243, 243, 243)",
     "theme": "light"
